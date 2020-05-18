@@ -1,19 +1,16 @@
-import React, { useState } from "react"
+import React, { useEffect } from "react"
 import { Link } from "gatsby"
 import Layout from "../components/layout"
 import Image from "../components/image"
 import SEO from "../components/seo"
-import {
-  IdentityModal,
-  useIdentityContext,
-} from "react-netlify-identity-widget"
-import "react-netlify-identity-widget/styles.css"
-import "@reach/tabs/styles.css"
+import netlifyIdentity from "netlify-identity-widget"
+
+netlifyIdentity.init({})
 
 const IndexPage = () => {
-  const identity = useIdentityContext()
-  const [dialog, setDialog] = useState(false)
-
+  useEffect(() => {
+    netlifyIdentity.init({})
+  })
   return (
     <Layout>
       <SEO title="Home" />
@@ -23,19 +20,21 @@ const IndexPage = () => {
       <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
         <Image />
       </div>
-
       <Link to="/page-2/">Go to page 2</Link>
-      {identity && identity.isLoggedIn && (
-        <pre>{JSON.stringify(identity, null, 2)}</pre>
-      )}
-      {!dialog && <button onClick={() => setDialog(true)}>Log In</button>}
-      <IdentityModal
-        showDialog={dialog}
-        onCloseDialog={() => setDialog(false)}
-        onLogin={user => console.log("hello ", user?.user_metadata)}
-        onSignup={user => console.log("welcome ", user?.user_metadata)}
-        onLogout={() => console.log("bye ")}
-      />
+      <button
+        onClick={() => {
+          netlifyIdentity.open()
+        }}
+      >
+        Log in
+      </button>
+      <button
+        onClick={() => {
+          console.log(netlifyIdentity.currentUser())
+        }}
+      >
+        Log out
+      </button>
     </Layout>
   )
 }
