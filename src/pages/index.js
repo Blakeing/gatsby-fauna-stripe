@@ -1,42 +1,36 @@
-import React, { useEffect } from "react"
+import React, { useContext } from "react"
+import { Container, Heading, Button, Flex, NavLink } from "theme-ui"
 import { Link } from "gatsby"
-import Layout from "../components/layout"
-import Image from "../components/image"
-import SEO from "../components/seo"
-import netlifyIdentity from "netlify-identity-widget"
+import { IdentityContext } from "../../identity-context"
+export default props => {
+  const { user, identity: netlifyIdentity } = useContext(IdentityContext)
 
-netlifyIdentity.init({})
-
-const IndexPage = () => {
-  useEffect(() => {
-    netlifyIdentity.init({})
-  })
   return (
-    <Layout>
-      <SEO title="Home" />
-      <h1>Hi people</h1>
-      <p>Welcome to your new Gatsby site.</p>
-      <p>Now go build something great.</p>
-      <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-        <Image />
-      </div>
-      <Link to="/page-2/">Go to page 2</Link>
-      <button
-        onClick={() => {
-          netlifyIdentity.open()
-        }}
-      >
-        Log in
-      </button>
-      <button
-        onClick={() => {
-          console.log(netlifyIdentity.currentUser())
-        }}
-      >
-        Log out
-      </button>
-    </Layout>
+    <Container>
+      <Flex as="nav">
+        <NavLink as={Link} to="/" p={2}>
+          Home
+        </NavLink>
+        <NavLink as={Link} to={"/app"} p={2}>
+          Dashboard
+        </NavLink>
+        {user && (
+          <NavLink href="#!" p={2}>
+            {user.user_metadata.full_name}
+          </NavLink>
+        )}
+      </Flex>
+      <Flex sx={{ flexDirection: "column", padding: 3 }}>
+        <Heading as="h1">Get Stuff Done</Heading>
+        <Button
+          sx={{ marginTop: 2 }}
+          onClick={() => {
+            netlifyIdentity.open()
+          }}
+        >
+          Log In
+        </Button>
+      </Flex>
+    </Container>
   )
 }
-
-export default IndexPage
