@@ -1,10 +1,20 @@
 import React, { useContext } from "react"
-import { Container, Flex, NavLink } from "theme-ui"
+import { Container, Flex, NavLink, Button } from "theme-ui"
 import { Link } from "@reach/router"
 import { IdentityContext } from "../../identity-context"
 
 export default () => {
   const { user, identity: netlifyIdentity } = useContext(IdentityContext)
+
+  fetch("/.netlify/functions/create-manage-link", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${user.token.access_token}`,
+    },
+  })
+    .then(res => res.json())
+    .then(res => console.log(JSON.stringify(res, null, 2)))
+    .catch(err => console.error(JSON.stringify(err, null, 2)))
 
   return (
     <Container>
@@ -26,6 +36,19 @@ export default () => {
             Log out {user.user_metadata.full_name}
           </NavLink>
         )}
+      </Flex>
+      {/* <Flex>
+        <Button
+          onClick={() => {
+            redirectToManage()
+          }}
+        >
+          Manage Account
+        </Button>
+      </Flex> */}
+      <Flex>{user.token.access_token}</Flex>
+      <Flex>
+        <pre>{JSON.stringify(user, null, 2)}</pre>
       </Flex>
     </Container>
   )
