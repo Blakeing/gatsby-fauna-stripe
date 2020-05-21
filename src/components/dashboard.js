@@ -6,15 +6,19 @@ import { IdentityContext } from "../../identity-context"
 export default () => {
   const { user, identity: netlifyIdentity } = useContext(IdentityContext)
 
-  fetch("/.netlify/functions/create-manage-link", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${user.token.access_token}`,
-    },
-  })
-    .then(res => res.json())
-    .then(res => console.log(JSON.stringify(res, null, 2)))
-    .catch(err => console.error(JSON.stringify(err, null, 2)))
+  function redirectToManage() {
+    fetch("/.netlify/functions/create-manage-link", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${user.token.access_token}`,
+      },
+    })
+      .then(res => res.json())
+      .then(link => {
+        window.location.href = link
+      })
+      .catch(err => console.error(JSON.stringify(err, null, 2)))
+  }
 
   return (
     <Container>
@@ -37,7 +41,7 @@ export default () => {
           </NavLink>
         )}
       </Flex>
-      {/* <Flex>
+      <Flex>
         <Button
           onClick={() => {
             redirectToManage()
@@ -45,8 +49,7 @@ export default () => {
         >
           Manage Account
         </Button>
-      </Flex> */}
-      <Flex>{user.token.access_token}</Flex>
+      </Flex>
       <Flex>
         <pre>{JSON.stringify(user, null, 2)}</pre>
       </Flex>
