@@ -3,7 +3,6 @@ const fetch = require("node-fetch")
 const { faunaFetch } = require("./utils/fauna")
 
 exports.handler = async ({ body, headers }, context) => {
-  console.log("boop")
   try {
     const stripeEvent = stripe.webhooks.constructEvent(
       body,
@@ -15,7 +14,8 @@ exports.handler = async ({ body, headers }, context) => {
       const subscription = stripeEvent.data.object
 
       const stripeID = subscription.customer
-      const plan = subscription.items.data[0].plan.nickname
+
+      const plan = subscription.plan.nickname
 
       const role = `sub:${plan.split(" ")[0].toLowerCase()}`
 
@@ -32,6 +32,9 @@ exports.handler = async ({ body, headers }, context) => {
       const netlifyID = result.data.getUserByStripeID.netlifyID
 
       const { identity } = context.clientContext
+
+      console.log(context.clientContext)
+
       const response = await fetch(`${identity.url}/admin/users/${netlifyID}`, {
         method: "PUT",
         headers: {

@@ -20,11 +20,6 @@ export default () => {
       .catch(err => console.error(JSON.stringify(err, null, 2)))
   }
 
-  const parts = user.token.access_token.split(".")
-
-  const currentUser = JSON.parse(atob(parts[1]))
-  const { roles } = currentUser.app_metadata
-
   return (
     <Container>
       <Flex as="nav">
@@ -55,9 +50,7 @@ export default () => {
           Manage Account
         </Button>
       </Flex>
-      <Flex>
-        <pre>{JSON.stringify(roles, null, 2)}</pre>
-      </Flex>
+
       <Flex>
         <pre>{JSON.stringify(user, null, 2)}</pre>
       </Flex>
