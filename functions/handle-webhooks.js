@@ -33,8 +33,6 @@ exports.handler = async ({ body, headers }, context) => {
 
       const { identity } = context.clientContext
 
-      console.log(context.clientContext)
-
       const response = await fetch(`${identity.url}/admin/users/${netlifyID}`, {
         method: "PUT",
         headers: {
