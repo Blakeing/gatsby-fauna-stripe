@@ -7,6 +7,7 @@ export default () => {
   const { user, identity: netlifyIdentity } = useContext(IdentityContext)
 
   useEffect(() => {
+    getPremiumContent()
     netlifyIdentity
       .currentUser()
       .jwt(true)
@@ -17,7 +18,6 @@ export default () => {
         console.log(JSON.stringify(roles, null, 2))
         document.querySelector("pre").innerText = JSON.stringify(roles, null, 2)
       })
-    getPremiumContent()
   })
 
   function redirectToManage() {
