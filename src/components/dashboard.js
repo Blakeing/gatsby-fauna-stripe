@@ -17,6 +17,7 @@ export default () => {
         console.log(JSON.stringify(roles, null, 2))
         document.querySelector("pre").innerText = JSON.stringify(roles, null, 2)
       })
+    getPremiumContent()
   })
 
   function redirectToManage() {
@@ -31,6 +32,20 @@ export default () => {
         window.location.href = link
       })
       .catch(err => console.error(JSON.stringify(err, null, 2)))
+  }
+
+  function getPremiumContent() {
+    fetch("/.netlify/functions/get-premium-content", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${user.token.access_token}`,
+      },
+    })
+      .then(res => res.text())
+      .then(content => {
+        document.querySelector("#premium").innerText = content
+      })
+      .catch(err => console.error(err))
   }
 
   return (
@@ -66,6 +81,9 @@ export default () => {
 
       <Flex>
         <pre></pre>
+      </Flex>
+      <Flex>
+        <div id="premium"></div>
       </Flex>
     </Container>
   )
