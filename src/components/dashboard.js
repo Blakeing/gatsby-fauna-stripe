@@ -1,10 +1,23 @@
-import React, { useContext } from "react"
+import React, { useContext, useEffect } from "react"
 import { Container, Flex, NavLink, Button } from "theme-ui"
 import { Link } from "@reach/router"
 import { IdentityContext } from "../../identity-context"
 
 export default () => {
   const { user, identity: netlifyIdentity } = useContext(IdentityContext)
+
+  useEffect(() => {
+    netlifyIdentity
+      .currentUser()
+      .jwt(true)
+      .then(token => {
+        const parts = token.split(".")
+        const currentUser = JSON.parse(atob(parts[1]))
+        const { roles } = currentUser.app_metadata
+        console.log(JSON.stringify(roles, null, 2))
+        document.querySelector("pre").innerText = JSON.stringify(roles, null, 2)
+      })
+  })
 
   function redirectToManage() {
     fetch("/.netlify/functions/create-manage-link", {
@@ -52,7 +65,7 @@ export default () => {
       </Flex>
 
       <Flex>
-        <pre>{JSON.stringify(user, null, 2)}</pre>
+        <pre></pre>
       </Flex>
     </Container>
   )
